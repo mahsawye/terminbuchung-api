@@ -32,4 +32,10 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleDuplicate(DuplicateResourceException ex) {
         return new ErrorResponse(409, ex.getMessage(), Map.of());
     }
+
+    @ExceptionHandler(BookingConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleBookingConflict(BookingConflictException ex) {
+        return new ErrorResponse(409, ex.getMessage(), Map.of());
+    }
 }
