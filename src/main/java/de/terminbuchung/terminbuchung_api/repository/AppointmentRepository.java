@@ -19,4 +19,16 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     long countOverlapping(@Param("status") AppointmentStatus status,
                           @Param("start") LocalDateTime start,
                           @Param("end") LocalDateTime end);
+
+    @Query("""
+        select count(a) from Appointment a
+        where a.id <> :id
+          and a.status = :status
+          and a.startTime < :end
+          and a.endTime > :start
+        """)
+    long countOverlappingExcluding(@Param("id") Long id,
+                                   @Param("status") AppointmentStatus status,
+                                   @Param("start") LocalDateTime start,
+                                   @Param("end") LocalDateTime end);
 }

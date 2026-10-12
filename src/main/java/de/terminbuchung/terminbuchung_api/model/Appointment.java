@@ -47,4 +47,8 @@ public class Appointment {
     public LocalDateTime getEndTime() { return endTime; }
     public AppointmentStatus getStatus() { return status; }
     public void setStatus(AppointmentStatus status) { this.status = status; }
+    public void reschedule(LocalDateTime newStartTime) {
+        this.startTime = newStartTime;
+        this.endTime = newStartTime.plusMinutes(treatment.getDurationMinutes());
+    }
 }

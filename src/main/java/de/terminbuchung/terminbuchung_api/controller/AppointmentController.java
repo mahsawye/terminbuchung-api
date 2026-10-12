@@ -3,6 +3,7 @@ package de.terminbuchung.terminbuchung_api.controller;
 import de.terminbuchung.terminbuchung_api.dto.AppointmentRequest;
 import de.terminbuchung.terminbuchung_api.dto.AppointmentResponse;
 import de.terminbuchung.terminbuchung_api.service.AppointmentService;
+import de.terminbuchung.terminbuchung_api.dto.RescheduleRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -41,5 +42,17 @@ public class AppointmentController {
     @PatchMapping("/{id}/cancel")
     public AppointmentResponse cancel(@PathVariable Long id) {
         return AppointmentResponse.from(service.cancel(id));
+    }
+
+    @PatchMapping("/{id}/reschedule")
+    public AppointmentResponse reschedule(@PathVariable Long id,
+                                          @Valid @RequestBody RescheduleRequest request) {
+        return AppointmentResponse.from(service.reschedule(id, request.startTime()));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
     }
 }

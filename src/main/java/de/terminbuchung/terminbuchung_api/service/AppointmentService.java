@@ -55,6 +55,33 @@ public class AppointmentService {
     }
 
     @Transactional
+    public Appointment reschedule(Long id, LocalDateTime newStartTime) {
+        Appointment appointment = findById(id);
+
+        if (appointment.getStatus() == AppointmentStatus.CANCELLED) {
+            throw new BookingConflictException("Cancelled appointments cannot be rescheduled");
+        }
+
+        LocalDateTime newEndTime =
+                newStartTime.plusMinutes(appointment.getTreatment().getDurationMinutes());
+
+        long overlapping = appointmentRepository.countOverlappingExcluding(
+                id, AppointmentStatus.BOOKED, newStartTime, newEndTime);
+        if (overlapping > 0) {
+            throw new BookingConflictException("This time slot is already booked");
+        }
+
+        appointment.reschedule(newStartTime);
+        return appointmentRepository.save(appointment);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        Appointment appointment = findById(id);
+        appointmentRepository.delete(appointment);
+    }
+
+    @Transactional
     public Appointment cancel(Long id) {
         Appointment appointment = findById(id);
         appointment.setStatus(AppointmentStatus.CANCELLED);
