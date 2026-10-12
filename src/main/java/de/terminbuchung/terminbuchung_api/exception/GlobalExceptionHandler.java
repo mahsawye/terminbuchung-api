@@ -26,4 +26,10 @@ public class GlobalExceptionHandler {
                 .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
         return new ErrorResponse(400, "Validation failed", errors);
     }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDuplicate(DuplicateResourceException ex) {
+        return new ErrorResponse(409, ex.getMessage(), Map.of());
+    }
 }
